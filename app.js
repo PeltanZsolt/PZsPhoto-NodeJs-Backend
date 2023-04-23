@@ -2,16 +2,16 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const routes = require('./routes/routes');
-const dotenv = require('dotenv')
+require('dotenv').config()
 
 app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-const host = '192.168.1.101';
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, host || 'localhost', () => {
+const HOST = process.env.HOST
+const PORT = process.env.PORT;
+app.listen(PORT, HOST, () => {
    console.log(
-      `PZsPhoto backend started at http://${host}:${PORT}. Waiting for requests...`
+      `PZsPhoto backend started at http://${HOST}:${PORT}. Waiting for requests...`
    );
 });

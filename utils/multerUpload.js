@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
             fs.mkdirSync(path);
          }
       } catch (err) {
-         console.log('multer err1;', err);
+         console.log('Multer error:', err);
       }
       cb(null, path);
    },
