@@ -1,3 +1,4 @@
 db backup
 node_modules
 process.env
+.env
