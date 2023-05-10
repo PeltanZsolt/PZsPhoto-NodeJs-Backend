@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
 router.get("/category/partiallist", async (req, res) => {
+	console.log("parital");
 	let categoriesLIstResponse;
 	try {
 		categoriesLIstResponse = await db.query(
@@ -63,6 +64,9 @@ router.get("/getPhotoAttributes", async (req, res) => {
 		"SELECT * FROM photos WHERE id = ?",
 		[req.query.id]
 	);
+	if (!photoAttributes[0] || !photoAttributes[0][0]) {
+		return res.json({ message: "Photo Id not found" });
+	}
 	const filePath = "/uploads/" + photoAttributes[0][0].category;
 	const options = {
 		root: path.join(__dirname, filePath),

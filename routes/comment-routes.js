@@ -1,9 +1,10 @@
-const express = require("express");
+const { express } = require("../utils/express");
 const router = express.Router();
 const db = require("../utils/database");
 const userAuthCheckMiddleware = require("../utils/user-authorization-check.middleware");
 const calcAverageRating = require("../utils/calc-average-rating");
 const updateAverageRating = require("../utils/update-average-rating");
+const { getSocketInstance } = require("../socket-io/io");
 
 router.get("/comment", async (req, res) => {
 	const photoId = req.query.photoId.toString();
@@ -16,6 +17,7 @@ router.get("/comment", async (req, res) => {
 		console.log("error: ", error);
 		return res.status(500).send({ error });
 	}
+
 	res.status(200).send(commentResponse[0]);
 });
 
@@ -48,6 +50,13 @@ router.post("/comment", userAuthCheckMiddleware, async (req, res) => {
 		if (!updateAverageRating(newComment.photoId, value)) {
 			return res.send({ error: "Database error" });
 		}
+
+		const message = {
+			messageSubject: "New comment posted",
+			newComment: newComment,
+		};
+		getSocketInstance().broadcast.emit("message", message);
+
 		res.status(200).send({
 			averageRating: value,
 		});
