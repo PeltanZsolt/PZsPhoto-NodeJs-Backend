@@ -115,7 +115,12 @@ router.get("/getPhotoBlob", async (req, res) => {
 	const options = {
 		root: path.join(__dirname, filePath),
 	};
-	const fileName = photosResponse[0][0].filename;
+    let fileName;
+	try {
+		fileName = photosResponse[0][0].filename;
+	} catch (error) {
+		return res.send({ message: "Error occured while reading a file." });
+	}
 
 	res.sendFile(fileName, options, function (err) {
 		if (err) {
