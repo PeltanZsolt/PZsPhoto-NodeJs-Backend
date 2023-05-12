@@ -20,6 +20,12 @@ var mysql = require("mysql");
 require("dotenv").config();
 var dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 
-dbConnect.connect();
+dbConnect.connect(function (err) {
+	if (err) {
+		console.log("Error ocured while connecting to database", err);
+		throw err;
+	}
+	console.log("Connected!");
+});
 
 module.exports = dbConnect;
