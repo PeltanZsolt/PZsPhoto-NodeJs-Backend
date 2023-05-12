@@ -32,32 +32,74 @@ if (process.env.JAWSDB_URL) {
 async function initDB() {
 	await dbConnect.query(
 		`
-DROP TABLE IF EXISTS categories;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE 'categories' (
-  'id' int NOT NULL AUTO_INCREMENT,
-  'category' varchar(45) DEFAULT NULL,
-  PRIMARY KEY ('id')
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES 'categories' WRITE;
-/*!40000 ALTER TABLE 'categories' DISABLE KEYS */;
-INSERT INTO categories VALUES (30,'still life'),(31,'portrait'),(32,'life'),(33,'commercial'),(34,'nature');
-/*!40000 ALTER TABLE categories ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2023-05-12 14:51:35
+        DROP TABLE IF EXISTS visitorscount;
+        CREATE TABLE visitorscount (
+          id int unsigned NOT NULL AUTO_INCREMENT,
+          ipAddress varchar(45) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        
+        DROP TABLE IF EXISTS categories;
+        CREATE TABLE categories (
+          id int NOT NULL AUTO_INCREMENT,
+          category varchar(45) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        LOCK TABLES categories WRITE;
+        INSERT INTO categories VALUES (30,'still life'),(31,'portrait'),(32,'life'),(33,'commercial'),(34,'nature');
+        UNLOCK TABLES;
+        
+        DROP TABLE IF EXISTS comments;
+        CREATE TABLE comments (
+          photoId int DEFAULT NULL,
+          user varchar(45) DEFAULT NULL,
+          commentText text,
+          rating int DEFAULT NULL,
+          id int NOT NULL AUTO_INCREMENT,
+          PRIMARY KEY (id),
+          UNIQUE KEY id_UNIQUE (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=292 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        
+        DROP TABLE IF EXISTS photos;
+        CREATE TABLE photos (
+          id int NOT NULL AUTO_INCREMENT,
+          filename varchar(200) DEFAULT NULL,
+          title varchar(50) DEFAULT NULL,
+          category varchar(45) DEFAULT NULL,
+          description varchar(2000) DEFAULT NULL,
+          year varchar(45) DEFAULT NULL,
+          place varchar(45) DEFAULT NULL,
+          viewsNr int DEFAULT NULL,
+          averageRating decimal(3,0) DEFAULT NULL,
+          PRIMARY KEY (id),
+          UNIQUE KEY id_UNIQUE (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        LOCK TABLES photos WRITE;
+        UNLOCK TABLES;
+        
+        DROP TABLE IF EXISTS users;
+        CREATE TABLE users (
+          id int NOT NULL AUTO_INCREMENT,
+          username varchar(45) DEFAULT NULL,
+          password varchar(255) DEFAULT NULL,
+          isAdmin enum('true','false') DEFAULT NULL,
+          jwtToken varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        LOCK TABLES users WRITE;
+        INSERT INTO users VALUES (39,'Admin','$2a$12$IZeQSdK33xBS12W2vTFB0.veSIPfZ9bgO6PF3RBbQmMfZwNuppjJC','true','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFkbWluIiwiaWF0IjoxNjgxNjY3NDkzfQ.7ZJIo1xEBwJQfhochfXvRrw-gYI4pqt_IHufq9k_vco'),(40,'User1','$2a$12$jpwsk8KhRU15bTgXNfd1weE7fa7oXPPe.LgGphD8zmxBPv7OGG4dS','true','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVzZXIxIiwiaWF0IjoxNjgxNzYwOTQ4fQ.J9QWSqjO48JjVcicmO3EoWi0qtqwz3ijSQTv-crO8C8'),(41,'User2','$2a$12$KE0DSA62qjxBhuS3QbsvW.mjfuWb11gt6bvbu7aMIVXS5erWnHS4K',NULL,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVzZXIyIiwiaWF0IjoxNjgxOTMwMTU4fQ.UzgRSbOFXsL74uqXqDh6YdS5W0SgOVNiZxzXtey91Hw'),(42,'User3','$2a$12$..1S7axMBVMPVAcNvifWGOa89/K9UnP7YNdCWd/3DGTRL1ZMNJJFK',NULL,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVzZXIzIiwiaWF0IjoxNjgyMDI0NzY0fQ.pWILxQv4Smzqb3ZE1bTIpSCou6dS5IjLLOSe2VTtZRo');
+        UNLOCK TABLES;
+        
+        DROP TABLE IF EXISTS visitorscount;
+        CREATE TABLE visitorscount (
+          id int unsigned NOT NULL AUTO_INCREMENT,
+          ipAddress varchar(45) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        LOCK TABLES visitorscount WRITE;
+        INSERT INTO visitorscount VALUES (13,'85.66.213.28'),(14,'94.21.173.49'),(15,'81.16.205.32'),(16,'81.16.207.41'),(17,'185.182.212.120'),(18,'91.82.210.95'),(19,'85.67.47.125');
+        UNLOCK TABLES;
+        
 
         `
 	);
