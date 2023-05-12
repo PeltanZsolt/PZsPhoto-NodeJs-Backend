@@ -7,11 +7,11 @@ if (process.env.JAWSDB_URL) {
 	dbConnect.connect();
 	dbConnect.on("connection", () => {
         console.log("DB connection established");
+        initDB();
 	});
 	dbConnect.on("error", () => {
         console.log("JAWSDB connection could not be established");
 	});
-    initDB();
 } else {
 	const mysql = require("mysql2/promise");
 	dbConnect = mysql.createPool({
@@ -31,8 +31,11 @@ if (process.env.JAWSDB_URL) {
 
 async function initDB() {
     console.log('initialising jawsdb')
-	await dbConnect.query(
+	const dbresult = await dbConnect.query(
 		`
+        CREATE SCHEMA pzsphotos ;
+        USE pzsphotos;
+        
         DROP TABLE IF EXISTS visitorscount;
         CREATE TABLE visitorscount (
           id int unsigned NOT NULL AUTO_INCREMENT,
@@ -101,9 +104,9 @@ async function initDB() {
         INSERT INTO visitorscount VALUES (13,'85.66.213.28'),(14,'94.21.173.49'),(15,'81.16.205.32'),(16,'81.16.207.41'),(17,'185.182.212.120'),(18,'91.82.210.95'),(19,'85.67.47.125');
         UNLOCK TABLES;
         
-
         `
-	);
+        );
+        console.log('DB initailising result: ', dbresult)
 }
 
 module.exports = dbConnect;
