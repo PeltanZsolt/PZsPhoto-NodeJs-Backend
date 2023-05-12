@@ -5,6 +5,7 @@ if (process.env.JAWSDB_URL) {
 	const mysql = require("mysql");
 	dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 	dbConnect.connect();
+	initDB();
 	dbConnect.on("connection", () => {
 		console.log("DB connection established");
 	});
