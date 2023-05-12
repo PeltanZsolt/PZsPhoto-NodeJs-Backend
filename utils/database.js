@@ -5,15 +5,14 @@ if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
 	const mysql = require("mysql");
 	dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
-	dbConnect.connect().then(() => {
-		dbConnect.on("connection", () => {
-			console.log("DB connection established");
-		});
-		dbConnect.on("error", () => {
-			console.log("JAWSDB connection could not be established");
-		});
-		dbConnect.query("SELECT * FROM");
+	dbConnect.connect();
+	dbConnect.on("connection", () => {
+		console.log("DB connection established");
 	});
+	dbConnect.on("error", () => {
+		console.log("JAWSDB connection could not be established");
+	});
+	dbConnect.query("SELECT * FROM");
 } else {
 	const mysql = require("mysql2/promise");
 	dbConnect = mysql.createPool({
