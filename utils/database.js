@@ -5,7 +5,7 @@ var dbConnect;
 
 if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
-	dbConnect = mysql.createPool({
+	dbConnect = mysql2.createPool({
 		host: process.env.JAWSDB_HOST,
 		user: process.env.JAWSDB_USER,
 		password: process.env.JAWSDB_PASSWORD,
