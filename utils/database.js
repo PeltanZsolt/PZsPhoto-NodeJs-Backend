@@ -1,4 +1,4 @@
-// const mysql = require("mysql2/promise");
+const mysql = require("mysql2/promise");
 
 // const dbConnect = mysql.createPool({
 // 	host: process.env.DB_HOST,
@@ -16,7 +16,7 @@
 // 	multipleStatements: process.env.DB_MULTIPLE_STATEMENTS,
 // });
 
-var mysql = require("mysql");
+// var mysql = require("mysql");
 require("dotenv").config();
 var dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 
