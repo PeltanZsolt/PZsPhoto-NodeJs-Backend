@@ -5,13 +5,13 @@ if (process.env.JAWSDB_URL) {
 	const mysql = require("mysql");
 	dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 	dbConnect.connect();
-	initDB();
 	dbConnect.on("connection", () => {
-		console.log("DB connection established");
+        console.log("DB connection established");
 	});
 	dbConnect.on("error", () => {
-		console.log("DB connection could not be established");
+        console.log("JAWSDB connection could not be established");
 	});
+    initDB();
 } else {
 	const mysql = require("mysql2/promise");
 	dbConnect = mysql.createPool({
@@ -30,6 +30,7 @@ if (process.env.JAWSDB_URL) {
 }
 
 async function initDB() {
+    console.log('initialising jawsdb')
 	await dbConnect.query(
 		`
         DROP TABLE IF EXISTS visitorscount;
