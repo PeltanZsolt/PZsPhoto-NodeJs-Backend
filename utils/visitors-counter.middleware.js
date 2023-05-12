@@ -11,7 +11,7 @@ const visitorsCounterMiddleware = async (req, res, next) => {
 	} catch (error) {
 		console.log(error.message);
 	}
-	if (!visitorsCountResult[0][0]) {
+	if (visitorsCountResult[0] && !visitorsCountResult[0][0]) {
 		try {
 			await db.query(`INSERT INTO visitorsCount (ipAddress) VALUES (?)`, [
 				ipAddress,
@@ -19,8 +19,8 @@ const visitorsCounterMiddleware = async (req, res, next) => {
 		} catch (error) {
 			console.log(error);
 		}
+        req.visitorsCount = visitorsCountResult[0][1][0]["COUNT(*)"];
 	}
-	req.visitorsCount = visitorsCountResult[0][1][0]["COUNT(*)"];
 	next();
 };
 

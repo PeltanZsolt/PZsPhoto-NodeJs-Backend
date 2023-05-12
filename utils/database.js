@@ -2,6 +2,7 @@ require("dotenv").config();
 var dbConnect;
 
 if (process.env.JAWSDB_URL) {
+    console.log('JAWSDB_URL found. Initializing database...')
 	const mysql = require("mysql");
 	dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 	dbConnect.connect();
