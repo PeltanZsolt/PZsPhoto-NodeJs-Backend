@@ -22,7 +22,7 @@ if (process.env.JAWSDB_URL) {
 		multipleStatements: process.env.DB_MULTIPLE_STATEMENTS,
 	});
 	dbConnect.on("connection", () => {
-		console.log("DB connection established");
+		console.log("Local DB connection established");
 	});
 	dbConnect.on("error", () => {
 		console.log("DB connection could not be established");

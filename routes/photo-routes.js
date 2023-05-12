@@ -7,16 +7,20 @@ const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
 router.get("/category/partiallist", async (req, res) => {
 	console.log("parital");
-	let categoriesLIstResponse;
+	let categoriesListResponse;
 	try {
-		categoriesLIstResponse = await db.query(
+		categoriesListResponse = await db.query(
 			`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`
 		);
 	} catch (error) {
 		console.log("error: ", error);
-		res.status(500).send({ message: "Error during fetching categories" });
+		return res.status(500).send({ message: "Error during fetching categories" });
 	}
-	res.send(categoriesLIstResponse[0].map((el) => el.category));
+    if (categoriesListResponse[0] && categoriesListResponse[0][0]) {
+        res.send(categoriesListResponse[0].map((el) => el.category));
+    } else {
+        res.json({message: 'No categories yet.'})
+    }
 });
 
 router.get("/category/fulllist", async (req, res) => {
