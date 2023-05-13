@@ -6,22 +6,39 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
 router.get("/category/partiallist", async (req, res) => {
-	console.log("parital");
-	let categoriesListResponse;
-	try {
-		categoriesListResponse = await db.query(
-			`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`
-		);
-	} catch (error) {
-		console.log("error: ", error);
-		return res.status(500).send({ message: "Error during fetching categories" });
-	}
-    if (categoriesListResponse[0] && categoriesListResponse[0][0]) {
-        res.send(categoriesListResponse[0].map((el) => el.category));
-    } else {
-        res.json({message: 'No categories yet.'})
-    }
+	db.query(
+		`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`,
+		(err, results) => {
+			if (err) {
+				console.log("DB error: ", err);
+				return res.send({ error: err.message });
+			}
+            console.log('categoires results: ', results)
+            if (results.lenght > 0) {
+                res.send(results.map((el) => el.category));
+            } else {
+                res.json({ message: "No categories yet." });
+            }
+		}
+	);
 });
+// router.get("/category/partiallist", async (req, res) => {
+// 	console.log("parital");
+// 	let categoriesListResponse;
+// 	try {
+// 		categoriesListResponse = await db.query(
+// 			`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`
+// 		);
+// 	} catch (error) {
+// 		console.log("error: ", error);
+// 		return res.status(500).send({ message: "Error during fetching categories" });
+// 	}
+//     if (categoriesListResponse[0] && categoriesListResponse[0][0]) {
+//         res.send(categoriesListResponse[0].map((el) => el.category));
+//     } else {
+//         res.json({message: 'No categories yet.'})
+//     }
+// });
 
 router.get("/category/fulllist", async (req, res) => {
 	let categoriesLIstResponse;
@@ -119,7 +136,7 @@ router.get("/getPhotoBlob", async (req, res) => {
 	const options = {
 		root: path.join(__dirname, filePath),
 	};
-    let fileName;
+	let fileName;
 	try {
 		fileName = photosResponse[0][0].filename;
 	} catch (error) {
