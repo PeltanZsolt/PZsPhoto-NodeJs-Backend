@@ -5,13 +5,15 @@ var dbConnect;
 
 if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
+    console.log('jawsdb consts: =', process.env.JAWSDB_HOST, process.env.JAWSDB_USER, process.env.JAWSDB_PASSWORD, process.env.JAWSDB_DATABASE)
 	dbConnect = mysql2.createPool({
 		host: process.env.JAWSDB_HOST,
 		user: process.env.JAWSDB_USER,
 		password: process.env.JAWSDB_PASSWORD,
 		database: process.env.JAWSDB_DATABASE,
-		multipleStatements: process.env.DB_MULTIPLE_STATEMENTS,
+		multipleStatements: true,
 	});
+    console.log('dbconnect:= ', dbConnect)
 	dbConnect.on("connection", (mes) => {
 		console.log("JAWSDB connection established", mes);
 	});
