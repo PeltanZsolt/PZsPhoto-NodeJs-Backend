@@ -21,13 +21,14 @@ if (process.env.JAWSDB_URL) {
 	dbConnect.on("connect", () => {
 		console.log("DB connection established");
 	});
-	const users = dbConnect.query(
+	var users 
+    dbConnect.query(
 		"SELECT * FROM users",
 		function (err, rows, fields) {
 			if (err) throw err;
 
 			console.log("The solution is: ", rows);
-			return rows;
+			users = rows;
 		}
 	);
 	console.log("Users:= ", users);
