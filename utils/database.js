@@ -14,7 +14,7 @@ if (process.env.JAWSDB_URL) {
 	console.log("password=", password);
 	console.log("database=", database);
 
-	dbConnect = mysql2.createConnection({
+	dbConnect = mysql.createConnection({
 		host: host,
 		user: user,
 		password: password,
