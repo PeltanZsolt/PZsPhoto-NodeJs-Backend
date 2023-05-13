@@ -23,7 +23,7 @@ var dbConnect;
 
 if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
-	const host = process.env.JAWSDB_URL.slice(42, 104);
+	const host = process.env.JAWSDB_URL.slice(42, 99);
 	const user = process.env.JAWSDB_URL.slice(8, 24);
 	const password = process.env.JAWSDB_URL.slice(25, 41);
 	const database = process.env.JAWSDB_URL.slice(105);
