@@ -5,56 +5,35 @@ const db = require("../utils/database");
 const jwt = require("jsonwebtoken");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-router.get("/category/partiallist",  (req, res) => {
+router.get("/category/partiallist", (req, res) => {
 	db.query(
-		`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`
-		,
+		`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`,
 		(err, results) => {
 			if (err) {
 				console.log("DB error: ", err);
 				return res.send({ error: err.message });
 			}
-		    console.log('categoires results: ', results)
-		    if (results.lenght > 0) {
-		        res.send(results.map((el) => el.category));
-		    } else {
-		        res.json({ message: "No categories yet." });
-		    }
-            console.log("photoresult :", results);
+			console.log("partial list reuslt: ", results);
+			if (results.length > 0) {
+				res.send(results.map((el) => el.category));
+			} else {
+				res.json({ message: "No categories yet." });
+			}
 		}
 	);
 });
-// router.get("/category/partiallist", async (req, res) => {
-// 	let categoriesListResponse;
-// 	try {
-// 		categoriesListResponse = await db.query(
-// 			`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`
-// 		);
-// 	} catch (error) {
-// 		console.log("error: ", error);
-// 		return res
-// 			.status(500)
-// 			.send({ message: "Error during fetching categories" });
-// 	}
-// 	console.log("categoriesListResponse", categoriesListResponse[0]);
-// 	if (categoriesListResponse[0] && categoriesListResponse[0][0]) {
-// 		res.send(categoriesListResponse[0].map((el) => el.category));
-// 	} else {
-// 		res.json({ message: "No categories yet." });
-// 	}
-// });
 
-router.get("/category/fulllist", async (req, res) => {
-	let categoriesLIstResponse;
-	try {
-		categoriesLIstResponse = await db.query(
-			`SELECT category FROM categories`
-		);
-	} catch (error) {
-		console.log("error: ", error);
-		res.status(500).send({ message: "Error during fetching categories" });
-	}
-	res.send(categoriesLIstResponse[0].map((el) => el.category));
+router.get("/category/fulllist", (req, res) => {
+	db.query(`SELECT category FROM categories`, (error, results, fields) => {
+		if (error) {
+			console.log("error: ", error);
+			res.status(500).send({
+				message: "Error during fetching categories",
+			});
+		}
+		console.log("results: ", results);
+		res.send(results.map((el) => el.category));
+	});
 });
 
 router.post("/category/update", async (req, res) => {
@@ -99,37 +78,40 @@ router.get("/getPhotoAttributes", async (req, res) => {
 	res.status(200).send(photoAttributes[0]);
 });
 
-router.get("/getHeroPhotoByCategory", async (req, res) => {
+router.get("/getHeroPhotoByCategory", (req, res) => {
 	if (!req.query.category) {
 		return res.send({ message: "server error" });
 	}
-	let heroPhotos;
-	try {
-		heroPhotos = await db.query(
-			`SELECT * FROM photos WHERE category = '${req.query.category}'`
-		);
-	} catch (error) {
-		console.log(error);
-		return res.status(500).json({ message: error.message });
-	}
-	const filePath = "../uploads/";
-	const options = {
-		root: path.join(__dirname, filePath),
-	};
-	if (!heroPhotos[0][0]) {
-		return res.status(200).json({
-			message: `No photos uploaded yet for category ${req.query.category}`,
-		});
-	}
-	const randomIndex = Math.round(Math.random() * (heroPhotos[0].length - 1));
-	const fileName = heroPhotos[0][randomIndex].filename;
-	res.sendFile(fileName, options, function (err) {
-		if (err) {
-			() => {
-				console.log("Error while sending file: ", err);
+	db.query(
+		`SELECT * FROM photos WHERE category = '${req.query.category}'`,
+		(error, results, fields) => {
+			if (error) {
+				console.log(error);
+				return res.status(500).json({ message: error.message });
+			}
+			const filePath = "../uploads/";
+			const options = {
+				root: path.join(__dirname, filePath),
 			};
+            console.log('heroes resulta: = ', results)
+			if (!results[0]) {
+				return res.status(200).json({
+					message: `No photos uploaded yet for category ${req.query.category}`,
+				});
+			}
+			const randomIndex = Math.round(
+				Math.random() * (results.length - 1)
+			);
+			const fileName = results[randomIndex].filename;
+			res.sendFile(fileName, options, function (err) {
+				if (err) {
+					() => {
+						console.log("Error while sending file: ", err);
+					};
+				}
+			});
 		}
-	});
+	);
 });
 
 router.get("/getPhotoBlob", async (req, res) => {
