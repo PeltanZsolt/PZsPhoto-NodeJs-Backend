@@ -1,6 +1,8 @@
 const mysql2 = require("mysql2");
+const mysql2promise = require("mysql2/promise");
 require("dotenv").config();
 var pool;
+var poolPromise;
 
 if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
@@ -22,6 +24,20 @@ if (process.env.JAWSDB_URL) {
 	pool.on("error", (err) => {
 		console.log("JAWSDB connection could not be established", err);
 	});
+
+	poolPromise = mysql2promise.createPool({
+		host: host,
+		user: user,
+		password: password,
+		database: database,
+		multipleStatements: true,
+	});
+	poolPromise.on("connect", () => {
+		console.log("DB poolPromise connection established");
+	});
+	poolPromise.on("error", (err) => {
+		console.log("JAWSDB connection could not be established", err);
+	});
 } else {
 	pool = mysql2.createPool({
 		host: process.env.DB_HOST,
@@ -38,5 +54,5 @@ if (process.env.JAWSDB_URL) {
 	});
 	
 }
-module.exports = pool;
+module.exports = {pool, poolPromise};
 

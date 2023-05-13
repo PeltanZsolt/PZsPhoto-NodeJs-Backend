@@ -4,7 +4,7 @@ const xss = require("xss");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const passwordValidator = require("../utils/password.validator");
-const db = require("../utils/database");
+const {pool, poolPromise} = require("../utils/database");
 const existingUserMiddleware = require('../utils/existing-user.middleware')
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
@@ -35,7 +35,7 @@ router.post("/signup", existingUserMiddleware, async (req, res) => {
 	];
 
 	try {
-		await db.query(
+		await poolPromise.query(
 			`INSERT INTO users (username, password, jwtToken) VALUES (?)`,
 			[signupData]
 		);

@@ -1,11 +1,11 @@
-const db = require("./database");
+const {poolPromise} = require("./database");
 
 const existingUserMiddleware = async (req, res, next) => {
 	const username = req.body.username;
 
 	let existingUserCheck;
 	try {
-		existingUserCheck = await db.query(
+		existingUserCheck = await poolPromise.query(
 			`SELECT * FROM users WHERE username = (?)`,
 			username
 		);
