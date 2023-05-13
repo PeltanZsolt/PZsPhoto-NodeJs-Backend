@@ -22,14 +22,16 @@ if (process.env.JAWSDB_URL) {
 		multipleStatements: true,
 	});
 	dbConnect.connect();
-	dbConnect.on("connect", (mes) => {
-		console.log("DB connection established", mes);
+	dbConnect.on("connect", (stream) => {
+		console.log("DB connection established", stream);
         const users = dbConnect.query("SELECT * FROM users");
         console.log("Users: ", users);
 	});
 	dbConnect.on("error", (err) => {
 		console.log("JAWSDB connection could not be established", err);
 	});
+
+    dbConnect.end()
 } else {
 	dbConnect = mysql2.createPool({
 		host: process.env.DB_HOST,
