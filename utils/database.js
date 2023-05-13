@@ -12,18 +12,18 @@ if (process.env.JAWSDB_URL) {
 	const password = process.env.JAWSDB_URL.slice(25, 41);
 	const database = process.env.JAWSDB_URL.slice(105);
 
-	dbConnect = mysql2.createPool({
+	pool = mysql2.createPool({
 		host: host,
 		user: user,
 		password: password,
 		database: database,
 		multipleStatements: true,
 	});
-	dbConnect.getConnection((err, connection) => {
+	pool.getConnection((err, connection) => {
 		if (err) throw err;
 		console.log("Pool connection established");
 	});
-	dbConnect.on("connect", () => {
+	pool.on("connect", () => {
 		console.log("DB pool connection established");
 	});
 	// var users;
