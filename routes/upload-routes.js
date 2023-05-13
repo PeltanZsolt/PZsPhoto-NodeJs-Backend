@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const xss = require("xss");
-const db = require("../utils/database");
+const {poolPromise} = require("../utils/database");
 const multerUpload = require("../utils/multerUpload");
 const adminAuthCheckMiddleware = require("../utils/admin-authorization-check.middleware");
 
@@ -18,7 +18,7 @@ router.post(
 		newPhotoAttributes[0] = req.file.filename; // Get randomized filename from Multer
 
 		try {
-			[imageUploadResult] = await db.query(
+			[imageUploadResult] = await poolPromise.query(
 				`INSERT INTO photos (filename, title, category, description, year, place, viewsNr, averageRating) VALUES (?)`,
 				[newPhotoAttributes]
 			);

@@ -53,6 +53,19 @@ if (process.env.JAWSDB_URL) {
 		console.log("DB connection could not be established");
 	});
 	
+    poolPromise = mysql2promise.createPool({
+		host: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		password: process.env.DB_PASSWORD,
+		database: process.env.DB_DATABASE,
+		multipleStatements: process.env.DB_MULTIPLE_STATEMENTS,
+	});
+	poolPromise.on("connect", () => {
+		console.log("Local DB poolPromise connection established");
+	});
+	poolPromise.on("error", (err) => {
+		console.log("LocalDB connection could not be established", err);
+	});
 }
 module.exports = {pool, poolPromise};
 
