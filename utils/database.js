@@ -9,10 +9,6 @@ if (process.env.JAWSDB_URL) {
 	const user = process.env.JAWSDB_URL.slice(8, 24);
 	const password = process.env.JAWSDB_URL.slice(25, 41);
 	const database = process.env.JAWSDB_URL.slice(105);
-	console.log("host=", host);
-	console.log("user=", user);
-	console.log("password=", password);
-	console.log("database=", database);
 
 	dbConnect = mysql.createConnection({
 		host: host,
@@ -27,6 +23,11 @@ if (process.env.JAWSDB_URL) {
         const users = await dbConnect.query("SELECT * FROM users");
         console.log("Users: ", users);
 	});
+    connection.query('SELECT * AS solution', function(err, rows, fields) {
+        if (err) throw err;
+      
+        console.log('The solution is: ', rows[0].solution);
+      });
 	dbConnect.on("error", (err) => {
 		console.log("JAWSDB connection could not be established", err);
 	});
