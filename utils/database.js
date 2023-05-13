@@ -2,15 +2,24 @@ const mysql = require("mysql");
 const mysql2 = require("mysql2/promise");
 require("dotenv").config();
 var dbConnect;
+const host = process.env.JAWSDB_URL.slice(42, 104)
+const user = process.env.JAWSDB_URL.slice(8, 24)
+const password = process.env.JAWSDB_URL.slice(25, 41)
+const database = process.env.JAWSDB_URL.slice(105)
+
+console.log('host=', host)
+console.log('user=', user)
+console.log('password=', password)
+console.log('database=', database)
 
 if (process.env.JAWSDB_URL) {
-	console.log("JAWSDB_URL found. Initializing database...");
-    console.log('jawsdb consts: =', process.env.JAWSDB_HOST, process.env.JAWSDB_USER, process.env.JAWSDB_PASSWORD, process.env.JAWSDB_DATABASE)
+	// console.log("JAWSDB_URL found. Initializing database...");
+    // console.log('jawsdb consts: =', process.env.JAWSDB_HOST, process.env.JAWSDB_USER, process.env.JAWSDB_PASSWORD, process.env.JAWSDB_DATABASE)
 	dbConnect = mysql2.createPool({
-		host: process.env.JAWSDB_HOST,
-		user: process.env.JAWSDB_USER,
-		password: process.env.JAWSDB_PASSWORD,
-		database: process.env.JAWSDB_DATABASE,
+		host: host,
+		user: user,
+		password: password,
+		database: database,
 		multipleStatements: true,
 	});
     console.log('dbconnect:= ', dbConnect)
