@@ -41,7 +41,7 @@ if (process.env.JAWSDB_URL) {
 	});
 	// dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 	dbConnect.connect();
-	dbConnect.on("connection", (mes) => {
+	dbConnect.on("connect", (mes) => {
 		console.log("DB connection established", mes);
 	});
 	dbConnect.on("error", (err) => {
