@@ -23,7 +23,7 @@ if (process.env.JAWSDB_URL) {
         const users = await dbConnect.query("SELECT * FROM users");
         console.log("Users: ", users);
 	});
-    connection.query('SELECT * AS solution', function(err, rows, fields) {
+    dbConnect.query('SELECT * AS solution', function(err, rows, fields) {
         if (err) throw err;
       
         console.log('The solution is: ', rows[0].solution);
