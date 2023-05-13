@@ -34,7 +34,7 @@ if (process.env.JAWSDB_URL) {
 	// 	users = rows;
 	// 	console.log("Users:= ", users);
 	// });
-	dbConnect.on("error", (err) => {
+	pool.on("error", (err) => {
 		console.log("JAWSDB connection could not be established", err);
 	});
 	// dbConnect = mysql.createConnection({
