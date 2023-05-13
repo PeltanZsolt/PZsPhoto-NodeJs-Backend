@@ -18,7 +18,8 @@ router.post(
 		newPhotoAttributes[0] = req.file.filename; // Get randomized filename from Multer
 
 		try {
-			[imageUploadResult] = await poolPromise.query(
+            console.log('newphoto attributes: ', newPhotoAttributes)
+			await poolPromise.query(
 				`INSERT INTO photos (filename, title, category, description, year, place, viewsNr, averageRating) VALUES (?)`,
 				[newPhotoAttributes]
 			);
