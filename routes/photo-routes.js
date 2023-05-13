@@ -5,25 +5,26 @@ const db = require("../utils/database");
 const jwt = require("jsonwebtoken");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-router.get("/category/partiallist", async (req, res) => {
+router.get("/category/partiallist",  (req, res) => {
 	db.query(
-		`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`,
+		`SELECT category FROM categories WHERE EXISTS (SELECT category FROM photos WHERE categories.category = photos.category)`
+		,
 		(err, results) => {
 			if (err) {
 				console.log("DB error: ", err);
 				return res.send({ error: err.message });
 			}
-            console.log('categoires results: ', results)
-            if (results.lenght > 0) {
-                res.send(results.map((el) => el.category));
-            } else {
-                res.json({ message: "No categories yet." });
-            }
+		    console.log('categoires results: ', results)
+		    if (results.lenght > 0) {
+		        res.send(results.map((el) => el.category));
+		    } else {
+		        res.json({ message: "No categories yet." });
+		    }
+            console.log("photoresult :", results);
 		}
 	);
 });
 // router.get("/category/partiallist", async (req, res) => {
-// 	console.log("parital");
 // 	let categoriesListResponse;
 // 	try {
 // 		categoriesListResponse = await db.query(
@@ -31,13 +32,16 @@ router.get("/category/partiallist", async (req, res) => {
 // 		);
 // 	} catch (error) {
 // 		console.log("error: ", error);
-// 		return res.status(500).send({ message: "Error during fetching categories" });
+// 		return res
+// 			.status(500)
+// 			.send({ message: "Error during fetching categories" });
 // 	}
-//     if (categoriesListResponse[0] && categoriesListResponse[0][0]) {
-//         res.send(categoriesListResponse[0].map((el) => el.category));
-//     } else {
-//         res.json({message: 'No categories yet.'})
-//     }
+// 	console.log("categoriesListResponse", categoriesListResponse[0]);
+// 	if (categoriesListResponse[0] && categoriesListResponse[0][0]) {
+// 		res.send(categoriesListResponse[0].map((el) => el.category));
+// 	} else {
+// 		res.json({ message: "No categories yet." });
+// 	}
 // });
 
 router.get("/category/fulllist", async (req, res) => {

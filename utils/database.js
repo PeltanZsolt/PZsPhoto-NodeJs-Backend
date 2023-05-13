@@ -1,7 +1,9 @@
 const mysql = require("mysql");
-const mysql2 = require("mysql2/promise");
+const mysql2 = require("mysql2");
+const mysql2promise = require("mysql2/promise");
 require("dotenv").config();
 var dbConnect;
+var pool;
 
 if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
@@ -18,23 +20,20 @@ if (process.env.JAWSDB_URL) {
 		multipleStatements: true,
 	});
 	dbConnect.getConnection((err, connection) => {
-        if (err) throw err;
-        console.log('Pool connection established')
-    });
+		if (err) throw err;
+		console.log("Pool connection established");
+	});
 	dbConnect.on("connect", () => {
 		console.log("DB pool connection established");
 	});
-	var users 
-    dbConnect.query(
-		"SELECT * FROM users",
-		function (err, rows, fields) {
-			if (err) throw err;
+	// var users;
+	// dbConnect.query("SELECT * FROM users", function (err, rows, fields) {
+	// 	if (err) throw err;
 
-			console.log("The solution is: ", rows);
-			users = rows;
-            console.log("Users:= ", users);
-		}
-	);
+	// 	console.log("The solution is: ", rows);
+	// 	users = rows;
+	// 	console.log("Users:= ", users);
+	// });
 	dbConnect.on("error", (err) => {
 		console.log("JAWSDB connection could not be established", err);
 	});
@@ -49,15 +48,15 @@ if (process.env.JAWSDB_URL) {
 	// dbConnect.on("connect", () => {
 	// 	console.log("DB connection established");
 	// });
-	// var users 
-    // dbConnect.query(
+	// var users
+	// dbConnect.query(
 	// 	"SELECT * FROM users",
 	// 	function (err, rows, fields) {
 	// 		if (err) throw err;
 
 	// 		console.log("The solution is: ", rows);
 	// 		users = rows;
-    //         console.log("Users:= ", users);
+	//         console.log("Users:= ", users);
 	// 	}
 	// );
 	// dbConnect.on("error", (err) => {
@@ -65,20 +64,39 @@ if (process.env.JAWSDB_URL) {
 	// });
 
 	// dbConnect.end()
+// } else {
+// 	pool = mysql2.createPool({
+// 		host: process.env.DB_HOST,
+// 		user: process.env.DB_USER,
+// 		password: process.env.DB_PASSWORD,
+// 		database: process.env.DB_DATABASE,
+// 		multipleStatements: process.env.DB_MULTIPLE_STATEMENTS,
+// 	});
+// 	pool.on("connection", () => {
+// 		console.log("Local DB connection established");
+// 	});
+// 	pool.on("error", () => {
+// 		console.log("DB connection could not be established");
+// 	});
+	
+// }
 } else {
-	dbConnect = mysql2.createPool({
+	pool = mysql2.createPool({
 		host: process.env.DB_HOST,
 		user: process.env.DB_USER,
 		password: process.env.DB_PASSWORD,
 		database: process.env.DB_DATABASE,
 		multipleStatements: process.env.DB_MULTIPLE_STATEMENTS,
 	});
-	dbConnect.on("connection", () => {
+	pool.on("connection", () => {
 		console.log("Local DB connection established");
 	});
-	dbConnect.on("error", () => {
+	pool.on("error", () => {
 		console.log("DB connection could not be established");
 	});
+	
 }
 
-module.exports = dbConnect;
+// module.exports = dbConnect;
+module.exports = pool;
+
