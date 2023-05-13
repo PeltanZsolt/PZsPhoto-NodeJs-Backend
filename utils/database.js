@@ -3,24 +3,6 @@ const mysql2 = require("mysql2/promise");
 require("dotenv").config();
 var dbConnect;
 
-// if (process.env.JAWSDB_URL) {
-// console.log("JAWSDB_URL found. Initializing database...");
-// console.log('jawsdb consts: =', process.env.JAWSDB_HOST, process.env.JAWSDB_USER, process.env.JAWSDB_PASSWORD, process.env.JAWSDB_DATABASE)
-// dbConnect = mysql2.createPool({
-// 	host: host,
-// 	user: user,
-// 	password: password,
-// 	database: database,
-// 	multipleStatements: true,
-// });
-// console.log('dbconnect:= ', dbConnect)
-// dbConnect.on("connection", (mes) => {
-// 	console.log("JAWSDB connection established", mes);
-// });
-// dbConnect.on("error", (err) => {
-// 	console.log("JAWSDB connection could not be established", err);
-// });
-
 if (process.env.JAWSDB_URL) {
 	console.log("JAWSDB_URL found. Initializing database...");
 	const host = process.env.JAWSDB_URL.slice(42, 99);
@@ -32,23 +14,22 @@ if (process.env.JAWSDB_URL) {
 	console.log("password=", password);
 	console.log("database=", database);
 
-	dbConnect = mysql.createConnection({
+	dbConnect = mysql2.createConnection({
 		host: host,
 		user: user,
 		password: password,
 		database: database,
 		multipleStatements: true,
 	});
-	// dbConnect = mysql.createConnection(process.env.JAWSDB_URL);
 	dbConnect.connect();
 	dbConnect.on("connect", (mes) => {
 		console.log("DB connection established", mes);
+        const users = dbConnect.query("SELECT * FROM users");
+        console.log("Users: ", users);
 	});
 	dbConnect.on("error", (err) => {
 		console.log("JAWSDB connection could not be established", err);
 	});
-	const users = dbConnect.query("SELECT * FROM users");
-	console.log("Users: ", users);
 } else {
 	dbConnect = mysql2.createPool({
 		host: process.env.DB_HOST,
