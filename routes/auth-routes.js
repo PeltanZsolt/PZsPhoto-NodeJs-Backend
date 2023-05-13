@@ -8,10 +8,9 @@ const { pool, poolPromise } = require("../utils/database");
 const existingUserMiddleware = require("../utils/existing-user.middleware");
 require("dotenv").config();
 
-const jwtSecretKey = process.env.JWT_SECRET_KEY;
-
+const jwtSecretKey = "12e&6hga6336bxtT6bt567ugytvty09832hvg6gvvYgTVu765t";
 router.post("/signup", existingUserMiddleware, async (req, res) => {
-    console.log('secret key: ', jwtSecretKey)
+	console.log("secret key: ", jwtSecretKey);
 	if (req.existingUser) {
 		return res.json({ message: "Username already exists." });
 	}
