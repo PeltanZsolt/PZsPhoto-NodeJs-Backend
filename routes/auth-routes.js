@@ -1,18 +1,19 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const xss = require("xss");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const passwordValidator = require("../utils/password.validator");
-const {pool, poolPromise} = require("../utils/database");
-const existingUserMiddleware = require('../utils/existing-user.middleware')
+const { pool, poolPromise } = require("../utils/database");
+const existingUserMiddleware = require("../utils/existing-user.middleware");
+require("dotenv").config();
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
 router.post("/signup", existingUserMiddleware, async (req, res) => {
-    if (req.existingUser) {
+	if (req.existingUser) {
 		return res.json({ message: "Username already exists." });
-    }
+	}
 	const newUser = {
 		username: xss(req.body.username),
 		password: xss(req.body.password),
@@ -52,16 +53,16 @@ router.post("/signup", existingUserMiddleware, async (req, res) => {
 });
 
 router.post("/login", existingUserMiddleware, async (req, res) => {
-    if (!req.existingUser) {
-        return res.send({ message: "Invalid username." });
-    }
+	if (!req.existingUser) {
+		return res.send({ message: "Invalid username." });
+	}
 
 	if (!(await bcrypt.compare(req.body.password, req.existingUser.password))) {
 		return res.json({
 			message: "Incorrect password",
 		});
 	}
-    
+
 	res.json({
 		message: "Login successful",
 		jwtToken: req.existingUser.jwtToken,
