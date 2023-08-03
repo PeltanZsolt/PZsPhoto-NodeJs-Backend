@@ -9,7 +9,7 @@ function passwordValidator(password) {
     if (password.match(/[0-9]+/)) {
         strength += 1;
     }
-    if (password.lenght < 3) {
+    if (password.length < 3) {
         strength = 0;
    }
    if (strength >= 3) {

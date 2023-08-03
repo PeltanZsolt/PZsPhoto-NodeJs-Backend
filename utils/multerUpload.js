@@ -1,38 +1,17 @@
 const multer = require("multer");
-/*
-const fs = require("fs");
-
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		const path = "./uploads/" + "/";
-		try {
-			if (!fs.existsSync(path)) {
-				fs.mkdirSync(path);
-			}
-		} catch (err) {
-			console.log("Multer error:", err);
-		}
-		cb(null, path);
-	},
-	filename: (req, file, cb) => {
-		cb(null, Date.now() + "-" + file.originalname);
-	},
-});
-var multerUpload = multer({ storage: storage, limits: 10000000 });
-module.exports = { multerUpload };
-*/
-
 const { S3Client } = require("@aws-sdk/client-s3");
+require("dotenv").config();
+
 
 const s3Client = new S3Client({
-	region: "eu-west-1",
+	region: process.env.AWS_REGION,
 	credentials: {
-		accessKeyId: "AKIAWQDLPZFIMURXBEN3",
-		secretAccessKey: "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",
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 	},
 });
 
-const s3clientStorage = multer.memoryStorage({});
-const s3clientUpload = multer({ storage: s3clientStorage });
+const s3ClientStorage = multer.memoryStorage({});
+const s3ClientUpload = multer({ storage: s3ClientStorage });
 
-module.exports = { s3Client, s3clientUpload };
+module.exports = { s3Client, s3ClientUpload };

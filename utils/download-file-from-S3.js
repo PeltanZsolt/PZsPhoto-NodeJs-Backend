@@ -1,28 +1,24 @@
 const { GetObjectCommand } = require("@aws-sdk/client-s3");
 const { S3Client } = require("@aws-sdk/client-s3");
+require("dotenv").config();
 
 const s3Client = new S3Client({
-	region: "eu-west-1",
+	region: process.env.AWS_REGION,
 	credentials: {
-		accessKeyId: "AKIAWQDLPZFIMURXBEN3",
-		secretAccessKey: "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",
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 	},
 });
-const downloadFileFromS3 = async (filename) => {
+
+const getFileFromS3 = async (filename) => {
 	try {
-		const params = {
-			Bucket: "pzsphoto-bucket",
-			Key: filename,
-		};
 		const command = new GetObjectCommand({
-			Bucket: "pzsphoto-bucket",
+			Bucket: process.env.S3_BUCKET_NAME,
 			Key: filename,
 		});
-		// const command = new GetObjectCommand(params);
+
 		const response = await s3Client.send(command);
-		console.log("response S3: =", response);
 		const stream = response.Body;
-		console.log("stream: =", response.Body);
 
 		return new Promise((resolve, reject) => {
 			const chunks = [];
@@ -39,6 +35,4 @@ const downloadFileFromS3 = async (filename) => {
 	}
 };
 
-module.exports = {
-	downloadFileFromS3,
-};
+module.exports = { getFileFromS3 };

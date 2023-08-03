@@ -1,10 +1,11 @@
-const {pool} = require("./database");
+const { pool } = require("./database");
 
 const visitorsCounterMiddleware = (req, res, next) => {
 	const ipAddress = req.body.ip;
+	console.log("client ip address:", ipAddress);
 	pool.query(
 		`INSERT INTO visitorscount (ipAddress) SELECT '${ipAddress}' WHERE NOT EXISTS (SELECT * FROM visitorscount WHERE ipAddress = '${ipAddress}');
-         SELECT COUNT(*) FROM visitorscount`,
+        SELECT COUNT(*) FROM visitorscount`,
 		(error, results, fields) => {
 			if (error) {
 				console.log("DB error: ", error);
