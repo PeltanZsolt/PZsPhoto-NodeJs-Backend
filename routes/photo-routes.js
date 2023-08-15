@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 const { pool } = require("../utils/database");
+const poolLocal = require("../utils/database.local");
 const { getFileFromS3 } = require("../utils/download-file-from-S3");
 
 router.get("/category/partiallist", (req, res) => {
@@ -46,36 +47,36 @@ router.post("/category/update", (req, res) => {
 
 	const category = req.body.category;
 
-    pool.query(
-        'SELECT * from categories WHERE category = ?', [category],
-        (error, results, fields) => {
-            if (results && results[0]) {
-                return res.status(200).send({
-                    error: true,
+	pool.query(
+		"SELECT * from categories WHERE category = ?",
+		[category],
+		(error, results, fields) => {
+			if (results && results[0]) {
+				return res.status(200).send({
+					error: true,
 					message: "Category already exists!",
 				});
-            }
+			}
 
-            pool.query(
-                `INSERT INTO categories (category) VALUES (?)`,
-                [category],
-                (error, results, fields) => {
-                    if (error) {
-                        console.log(error);
-                        res.status(500).send({
-                            error: true,
-                            message: "Error during registering new category",
-                        });
-                    }
-                    res.send({
-                        success: "Ok",
-                        message: "Photo categories list successfully updated.",
-                    });
-                }
-            );
-        }
-    )
-
+			pool.query(
+				`INSERT INTO categories (category) VALUES (?)`,
+				[category],
+				(error, results, fields) => {
+					if (error) {
+						console.log(error);
+						res.status(500).send({
+							error: true,
+							message: "Error during registering new category",
+						});
+					}
+					res.send({
+						success: "Ok",
+						message: "Photo categories list successfully updated.",
+					});
+				}
+			);
+		}
+	);
 });
 
 router.get("/getPhotoAttributes", (req, res) => {
@@ -137,6 +138,71 @@ router.get("/getPhotoListByCategory", (req, res) => {
 			res.status(200).send(results);
 		}
 	);
+});
+
+router.get("/showtables", (req, res) => {
+	pool.query("SHOW TABLES", (err, results, fields) => {
+		if (err) {
+			console.log("erorr connectin Maria DB", err);
+			return;
+		}
+		const tables = results.map((row) => Object.values(row)[0]);
+		console.log("Tables:", tables);
+		res.send(tables);
+	});
+});
+
+router.get("/gettablerows", (req, res) => {
+	// console.log('req: ', req.query.tableName)
+	const tableName = req.query.tableName;
+
+	pool.query(`SELECT * FROM ${tableName}`, (err, rows) => {
+		if (err) {
+			console.error(`Error retrieving rows from ${tableName}:`, err);
+			return;
+		}
+
+		// console.log(`Rows from ${tableName}:`, rows);
+		res.send(rows);
+	});
+	pool.query();
+});
+
+router.post("/postTableNames", (req, res) => {
+	console.log("table names: ", req.body);
+	for (let tableName of req.body) {
+		poolLocal.query(`INSERT INTO ${tableName} VALUES`, [rows]);
+	}
+});
+
+router.post("/postTableRows", (req, res) => {
+	const tableName = req.body.tableName;
+	const rows = req.body.rows.map((row) => {
+		const newRow = {};
+		for (const [key, value] of Object.entries(row)) {
+			if (key !== "id") {
+				newRow[key] = value;
+			}
+		}
+		return newRow;
+	});
+	console.log("table rows: ", tableName, rows);
+	console.log({ poolLocal });
+
+    rows.forEach(row => {
+        poolLocal.query(
+            `INSERT INTO ${tableName} SET ?`,
+            row,
+            (err, result) => {
+                if (err) {
+                    console.error.log("Error whire copying", err);
+                    return;
+                }
+                console.log("Data transfer for ${tableName} rows succeed");
+            }
+        );
+    });
+
 });
 
 module.exports = router;
